@@ -34,6 +34,9 @@ const theme = createTheme({
     subtitle1: { fontWeight: 600, letterSpacing: '-0.005em' },
   },
   shape: { borderRadius: 10 },
+  breakpoints: {
+    values: { xs: 0, sm: 600, md: 840, lg: 1280, xl: 1920 },
+  },
   components: {
     MuiCssBaseline: {
       styleOverrides: {

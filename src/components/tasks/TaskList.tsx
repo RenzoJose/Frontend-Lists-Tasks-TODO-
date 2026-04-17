@@ -105,7 +105,7 @@ export function TaskList({ viewMode = 'all', priorityFilters = [], statusFilters
       {showPending && (
         <Box sx={{ mb: 5 }}>
           <SectionHeader label="Pendientes" count={pending.length} />
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2 }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2 }}>
             {priorityColumns
               .filter((col) => priorityFilters.length === 0 || priorityFilters.includes(col.key))
               .map((col) => (

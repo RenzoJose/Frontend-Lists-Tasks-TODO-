@@ -17,6 +17,9 @@ dist-ssr
 .env.*
 !.env.example
 
+# Local planning docs
+PLAN.md
+
 # Editor directories and files
 .github
 .vscode/*

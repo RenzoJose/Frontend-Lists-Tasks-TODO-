@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Drawer, Typography } from '@mui/material'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
@@ -146,9 +146,11 @@ interface SidebarProps {
   pendingCount: number
   completedCount: number
   filters: TaskFilters
+  mobileOpen: boolean
+  onClose: () => void
 }
 
-export function Sidebar({ totalCount, pendingCount, completedCount, filters }: SidebarProps) {
+export function Sidebar({ totalCount, pendingCount, completedCount, filters, mobileOpen, onClose }: SidebarProps) {
   const {
     viewMode,
     setViewMode,
@@ -178,24 +180,20 @@ export function Sidebar({ totalCount, pendingCount, completedCount, filters }: S
     { key: 'done',        label: 'Hecho'       },
   ]
 
-  return (
-    <Box
-      component="aside"
-      sx={{
-        width: 240,
-        flexShrink: 0,
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        height: '100vh',
-        borderRight: '1px solid #262626',
-        bgcolor: '#0a0a0a',
-        display: 'flex',
-        flexDirection: 'column',
-        zIndex: 100,
-        overflowY: 'auto',
-      }}
-    >
+  const drawerWidth = 240
+
+  const paperSx = {
+    width: drawerWidth,
+    boxSizing: 'border-box' as const,
+    borderRight: '1px solid #262626',
+    bgcolor: '#0a0a0a',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    overflowY: 'auto' as const,
+  }
+
+  const content = (
+    <>
       {/* Logo */}
       <Box sx={{ px: 2, py: '18px', borderBottom: '1px solid #1a1a1a', flexShrink: 0 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
@@ -298,6 +296,30 @@ export function Sidebar({ totalCount, pendingCount, completedCount, filters }: S
           })}
         </Typography>
       </Box>
-    </Box>
+    </>
+  )
+
+  return (
+    <>
+      {/* Mobile — temporary Drawer, visible below md */}
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={onClose}
+        ModalProps={{ keepMounted: true }}
+        sx={{ display: { xs: 'block', md: 'none' }, '& .MuiDrawer-paper': paperSx }}
+      >
+        {content}
+      </Drawer>
+
+      {/* Desktop — permanent Drawer, visible md+ */}
+      <Drawer
+        variant="permanent"
+        open
+        sx={{ display: { xs: 'none', md: 'block' }, '& .MuiDrawer-paper': paperSx }}
+      >
+        {content}
+      </Drawer>
+    </>
   )
 }
