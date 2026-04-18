@@ -1,10 +1,12 @@
-import { Box, Drawer, Typography } from '@mui/material'
+import { Box, Drawer, Typography, IconButton, Tooltip } from '@mui/material'
+import LogoutIcon from '@mui/icons-material/Logout'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import type { Priority, Status } from '@/types/task'
 import type { TaskFilters, ViewMode } from '@/hooks/useTaskFilters'
+import { useAuth } from '@/contexts/AuthContext'
 
 // ─── NavItem ──────────────────────────────────────────────────────────────────
 
@@ -151,6 +153,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ totalCount, pendingCount, completedCount, filters, mobileOpen, onClose }: SidebarProps) {
+  const { user, logout } = useAuth()
   const {
     viewMode,
     setViewMode,
@@ -286,15 +289,25 @@ export function Sidebar({ totalCount, pendingCount, completedCount, filters, mob
         )}
       </Box>
 
-      {/* Footer date */}
-      <Box sx={{ px: 2.5, py: 2, borderTop: '1px solid #141414', flexShrink: 0 }}>
-        <Typography sx={{ fontSize: '0.7rem', color: '#333', fontWeight: 500 }}>
-          {new Date().toLocaleDateString('es', {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </Typography>
+      {/* Footer */}
+      <Box sx={{ px: 2, py: 1.5, borderTop: '1px solid #141414', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography sx={{ fontSize: '0.7rem', color: '#333', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {user?.email}
+          </Typography>
+          <Typography sx={{ fontSize: '0.65rem', color: '#2a2a2a' }}>
+            {new Date().toLocaleDateString('es', { weekday: 'long', month: 'long', day: 'numeric' })}
+          </Typography>
+        </Box>
+        <Tooltip title="Cerrar sesión">
+          <IconButton
+            size="small"
+            onClick={logout}
+            sx={{ color: '#404040', flexShrink: 0, '&:hover': { color: '#f87171', bgcolor: '#2d1515' } }}
+          >
+            <LogoutIcon sx={{ fontSize: 15 }} />
+          </IconButton>
+        </Tooltip>
       </Box>
     </>
   )
