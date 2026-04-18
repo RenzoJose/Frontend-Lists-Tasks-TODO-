@@ -15,8 +15,11 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error: unknown) => {
-    const status = (error as { response?: { status?: number } })?.response?.status
-    if (status === 401) {
+    const axiosError = error as { response?: { status?: number }; config?: { url?: string } }
+    const status = axiosError?.response?.status
+    const url = axiosError?.config?.url ?? ''
+    // Only redirect on 401 from protected endpoints, not from auth endpoints themselves
+    if (status === 401 && !url.includes('/auth/')) {
       localStorage.removeItem(TOKEN_KEY)
       window.location.href = '/login'
     }
