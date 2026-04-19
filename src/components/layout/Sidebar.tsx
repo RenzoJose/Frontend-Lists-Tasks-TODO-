@@ -1,10 +1,12 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Drawer, Typography, IconButton, Tooltip } from '@mui/material'
+import LogoutIcon from '@mui/icons-material/Logout'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import type { Priority, Status } from '@/types/task'
 import type { TaskFilters, ViewMode } from '@/hooks/useTaskFilters'
+import { useAuth } from '@/contexts/AuthContext'
 
 // ─── NavItem ──────────────────────────────────────────────────────────────────
 
@@ -146,9 +148,12 @@ interface SidebarProps {
   pendingCount: number
   completedCount: number
   filters: TaskFilters
+  mobileOpen: boolean
+  onClose: () => void
 }
 
-export function Sidebar({ totalCount, pendingCount, completedCount, filters }: SidebarProps) {
+export function Sidebar({ totalCount, pendingCount, completedCount, filters, mobileOpen, onClose }: SidebarProps) {
+  const { user, logout } = useAuth()
   const {
     viewMode,
     setViewMode,
@@ -178,24 +183,20 @@ export function Sidebar({ totalCount, pendingCount, completedCount, filters }: S
     { key: 'done',        label: 'Hecho'       },
   ]
 
-  return (
-    <Box
-      component="aside"
-      sx={{
-        width: 240,
-        flexShrink: 0,
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        height: '100vh',
-        borderRight: '1px solid #262626',
-        bgcolor: '#0a0a0a',
-        display: 'flex',
-        flexDirection: 'column',
-        zIndex: 100,
-        overflowY: 'auto',
-      }}
-    >
+  const drawerWidth = 240
+
+  const paperSx = {
+    width: drawerWidth,
+    boxSizing: 'border-box' as const,
+    borderRight: '1px solid #262626',
+    bgcolor: '#0a0a0a',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    overflowY: 'auto' as const,
+  }
+
+  const content = (
+    <>
       {/* Logo */}
       <Box sx={{ px: 2, py: '18px', borderBottom: '1px solid #1a1a1a', flexShrink: 0 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
@@ -288,16 +289,50 @@ export function Sidebar({ totalCount, pendingCount, completedCount, filters }: S
         )}
       </Box>
 
-      {/* Footer date */}
-      <Box sx={{ px: 2.5, py: 2, borderTop: '1px solid #141414', flexShrink: 0 }}>
-        <Typography sx={{ fontSize: '0.7rem', color: '#333', fontWeight: 500 }}>
-          {new Date().toLocaleDateString('es', {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </Typography>
+      {/* Footer */}
+      <Box sx={{ px: 2, py: 1.5, borderTop: '1px solid #141414', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography sx={{ fontSize: '0.7rem', color: '#333', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {user?.email}
+          </Typography>
+          <Typography sx={{ fontSize: '0.65rem', color: '#2a2a2a' }}>
+            {new Date().toLocaleDateString('es', { weekday: 'long', month: 'long', day: 'numeric' })}
+          </Typography>
+        </Box>
+        <Tooltip title="Cerrar sesión">
+          <IconButton
+            size="small"
+            onClick={logout}
+            sx={{ color: '#404040', flexShrink: 0, '&:hover': { color: '#f87171', bgcolor: '#2d1515' } }}
+          >
+            <LogoutIcon sx={{ fontSize: 15 }} />
+          </IconButton>
+        </Tooltip>
       </Box>
-    </Box>
+    </>
+  )
+
+  return (
+    <>
+      {/* Mobile — temporary Drawer, visible below md */}
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={onClose}
+        ModalProps={{ keepMounted: true }}
+        sx={{ display: { xs: 'block', md: 'none' }, '& .MuiDrawer-paper': paperSx }}
+      >
+        {content}
+      </Drawer>
+
+      {/* Desktop — permanent Drawer, visible md+ */}
+      <Drawer
+        variant="permanent"
+        open
+        sx={{ display: { xs: 'none', md: 'block' }, '& .MuiDrawer-paper': paperSx }}
+      >
+        {content}
+      </Drawer>
+    </>
   )
 }

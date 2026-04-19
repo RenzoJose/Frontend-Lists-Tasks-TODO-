@@ -51,7 +51,7 @@ export function TaskForm() {
   }
 
   return (
-    <Box sx={{ mb: 5, maxWidth: 480 }}>
+    <Box sx={{ mb: 5, maxWidth: { xs: '100%', sm: 480 } }}>
       {/* Trigger button */}
       {!open && (
         <Box
@@ -133,7 +133,7 @@ export function TaskForm() {
                   <TextField
                     select
                     label="Prioridad"
-                    sx={{ minWidth: 140 }}
+                    sx={{ minWidth: { xs: '100%', sm: 140 } }}
                     {...field}
                     error={!!errors.priority}
                     helperText={errors.priority?.message}

@@ -1,4 +1,6 @@
-import { Box, Typography } from '@mui/material'
+import { useState } from 'react'
+import { Box, IconButton, Typography } from '@mui/material'
+import MenuIcon from '@mui/icons-material/Menu'
 import { TaskForm } from '@/components/tasks/TaskForm'
 import { TaskList } from '@/components/tasks/TaskList'
 import { Sidebar } from '@/components/layout/Sidebar'
@@ -8,6 +10,7 @@ import { useTaskFilters } from '@/hooks/useTaskFilters'
 export function TasksPage() {
   const { data: tasks } = useGetTasks()
   const filters = useTaskFilters()
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   const allTasks     = tasks ?? []
   const pendingCount   = allTasks.filter((t) => !t.completed).length
@@ -30,10 +33,12 @@ export function TasksPage() {
         pendingCount={pendingCount}
         completedCount={completedCount}
         filters={filters}
+        mobileOpen={mobileOpen}
+        onClose={() => setMobileOpen(false)}
       />
 
-      {/* Main content — offset by sidebar width */}
-      <Box sx={{ flex: 1, ml: '240px', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      {/* Main content — offset by sidebar width on desktop */}
+      <Box sx={{ flex: 1, ml: { xs: 0, md: '240px' }, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         {/* Sticky header */}
         <Box
           sx={{
@@ -50,9 +55,18 @@ export function TasksPage() {
             justifyContent: 'space-between',
           }}
         >
-          <Typography sx={{ fontSize: '0.9rem', fontWeight: 600, color: '#e5e5e5', letterSpacing: '-0.02em' }}>
-            {headerLabels[filters.viewMode]}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <IconButton
+              onClick={() => setMobileOpen(true)}
+              sx={{ display: { md: 'none' }, color: '#737373', mr: 0.5 }}
+              aria-label="Abrir menú"
+            >
+              <MenuIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+            <Typography sx={{ fontSize: '0.9rem', fontWeight: 600, color: '#e5e5e5', letterSpacing: '-0.02em' }}>
+              {headerLabels[filters.viewMode]}
+            </Typography>
+          </Box>
           <Box
             sx={{
               px: 1.25,
