@@ -1,5 +1,10 @@
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './contexts/AuthContext'
+import { ProtectedRoute } from './components/auth/ProtectedRoute'
 import { TasksPage } from './pages/TasksPage'
+import { LoginPage } from './pages/LoginPage'
+import { RegisterPage } from './pages/RegisterPage'
 
 const theme = createTheme({
   palette: {
@@ -34,6 +39,9 @@ const theme = createTheme({
     subtitle1: { fontWeight: 600, letterSpacing: '-0.005em' },
   },
   shape: { borderRadius: 10 },
+  breakpoints: {
+    values: { xs: 0, sm: 600, md: 840, lg: 1280, xl: 1920 },
+  },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
@@ -111,7 +119,18 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <TasksPage />
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<TasksPage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
     </ThemeProvider>
   )
 }

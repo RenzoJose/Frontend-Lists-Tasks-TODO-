@@ -13,7 +13,16 @@ dist-ssr
 *.local
 .env
 
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Local planning docs
+PLAN.md
+
 # Editor directories and files
+.github
 .vscode/*
 !.vscode/extensions.json
 .idea

@@ -91,7 +91,7 @@ export function TaskItem({ task }: { task: Task }) {
               mb: (task.description || task.priority) ? '6px' : 0,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
+              whiteSpace: { xs: 'normal', sm: 'nowrap' } as const,
             }}
           >
             {task.title}
@@ -167,7 +167,14 @@ export function TaskItem({ task }: { task: Task }) {
         {/* Actions */}
         <Box
           className="task-delete-btn"
-          sx={{ opacity: 0, transition: 'opacity 150ms ease', flexShrink: 0, display: 'flex', gap: '2px' }}
+          sx={{
+            opacity: 0,
+            transition: 'opacity 150ms ease',
+            flexShrink: 0,
+            display: 'flex',
+            gap: '2px',
+            '@media (hover: none)': { opacity: 1 },
+          }}
         >
           <Tooltip title="Editar tarea">
             <IconButton
