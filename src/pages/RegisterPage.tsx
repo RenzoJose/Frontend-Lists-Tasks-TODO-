@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { z } from 'zod'
 import { Box, Button, Link, Paper, TextField, Typography } from '@mui/material'
+import HomeIcon from '@mui/icons-material/Home'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import { useAuth } from '@/contexts/AuthContext'
 import type { RegisterDto } from '@/types/auth'
@@ -36,7 +37,7 @@ export function RegisterPage() {
     setServerError(null)
     try {
       await registerUser(data)
-      void navigate('/')
+      void navigate('/tasks')
     } catch (err: unknown) {
       const status = (err as { response?: { status?: number } })?.response?.status
       if (status === 409) {
@@ -59,6 +60,25 @@ export function RegisterPage() {
       }}
     >
       <Box sx={{ width: '100%', maxWidth: 400 }}>
+        <Link
+          component={RouterLink}
+          to="/"
+          sx={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 0.5,
+            fontSize: '0.8125rem',
+            color: '#525252',
+            textDecoration: 'none',
+            mb: 3,
+            '&:hover': { color: '#818cf8' },
+            transition: 'color 0.15s',
+          }}
+        >
+          <HomeIcon sx={{ fontSize: 14 }} />
+          Inicio
+        </Link>
+
         {/* Logo */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 4, justifyContent: 'center' }}>
           <Box
