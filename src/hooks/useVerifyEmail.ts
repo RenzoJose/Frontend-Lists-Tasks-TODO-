@@ -1,16 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import * as authApi from '@/api/auth'
 
 export type VerifyState = 'loading' | 'success' | 'invalid' | 'expired'
 
 export function useVerifyEmail(token: string | null) {
-  const [state, setState] = useState<VerifyState>('loading')
+  const [state, setState] = useState<VerifyState>(token ? 'loading' : 'invalid')
+  const hasVerifiedRef = useRef(false)
 
   useEffect(() => {
-    if (!token) {
-      setState('invalid')
-      return
-    }
+    if (!token) return
+
+    if (hasVerifiedRef.current) return
+    hasVerifiedRef.current = true
 
     authApi
       .verifyEmail(token)
