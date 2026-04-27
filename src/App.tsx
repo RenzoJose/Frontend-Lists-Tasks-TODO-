@@ -134,9 +134,10 @@ function App() {
         <AuthProvider>
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              <Route path="/" element={<LandingPage />} />        {/* De tu commit */}
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              {/* Elimina las 3 líneas de verify-email, forgot-password, reset-password */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/tasks" element={<TasksPage />} />
               </Route>
