@@ -20,6 +20,7 @@ export function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
   const [serverError, setServerError] = useState<string | null>(null)
+  const [notVerified, setNotVerified] = useState(false)
 
   const {
     register,
@@ -29,11 +30,18 @@ export function LoginPage() {
 
   const onSubmit = async (data: LoginDto) => {
     setServerError(null)
+    setNotVerified(false)
     try {
       await login(data)
       void navigate('/tasks')
-    } catch {
-      setServerError('Credenciales inválidas. Verifica tu email y contraseña.')
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } })?.response?.status
+      if (status === 403) {
+        setNotVerified(true)
+        setServerError('Debes verificar tu email antes de iniciar sesión.')
+      } else {
+        setServerError('Credenciales inválidas. Verifica tu email y contraseña.')
+      }
     }
   }
 
@@ -124,9 +132,29 @@ export function LoginPage() {
             />
 
             {serverError && (
-              <Typography sx={{ fontSize: '0.8125rem', color: '#f87171', bgcolor: '#2d1515', px: 2, py: 1.5, borderRadius: '8px', border: '1px solid #3d2020' }}>
-                {serverError}
-              </Typography>
+              <Box
+                sx={{
+                  px: 2,
+                  py: 1.5,
+                  borderRadius: '8px',
+                  border: `1px solid ${notVerified ? '#854d0e' : '#3d2020'}`,
+                  bgcolor: notVerified ? '#2d1f0e' : '#2d1515',
+                }}
+              >
+                <Typography sx={{ fontSize: '0.8125rem', color: notVerified ? '#fbbf24' : '#f87171', fontWeight: 600 }}>
+                  {serverError}
+                </Typography>
+                {notVerified && (
+                  <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                    <Typography sx={{ fontSize: '0.75rem', color: '#737373' }}>
+                      Busca el email de <strong style={{ color: '#a3a3a3' }}>verificación de cuenta</strong> que te enviamos al registrarte — es diferente al de recuperación de contraseña.
+                    </Typography>
+                    <Typography sx={{ fontSize: '0.75rem', color: '#737373' }}>
+                      ¿No lo encuentras? Revisa la carpeta de spam.
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
             )}
 
             <Button
@@ -144,6 +172,16 @@ export function LoginPage() {
             >
               Entrar
             </Button>
+
+            <Typography sx={{ textAlign: 'right', fontSize: '0.8rem' }}>
+              <Link
+                component={RouterLink}
+                to="/forgot-password"
+                sx={{ color: '#525252', textDecoration: 'none', '&:hover': { color: '#818cf8' }, transition: 'color 0.15s' }}
+              >
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </Typography>
           </Box>
         </Paper>
 

@@ -1,12 +1,13 @@
 import { useState } from 'react'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { z } from 'zod'
 import { Box, Button, Link, Paper, TextField, Typography } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
-import { useAuth } from '@/contexts/AuthContext'
+import * as authApi from '@/api/auth'
 import type { RegisterDto } from '@/types/auth'
 
 const schema = z
@@ -23,9 +24,8 @@ const schema = z
 type FormData = z.infer<typeof schema>
 
 export function RegisterPage() {
-  const { register: registerUser } = useAuth()
-  const navigate = useNavigate()
   const [serverError, setServerError] = useState<string | null>(null)
+  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null)
 
   const {
     register,
@@ -36,8 +36,9 @@ export function RegisterPage() {
   const onSubmit = async (data: RegisterDto) => {
     setServerError(null)
     try {
-      await registerUser(data)
-      void navigate('/tasks')
+      const { confirmPassword: _, ...payload } = data
+      await authApi.register(payload)
+      setRegisteredEmail(data.email)
     } catch (err: unknown) {
       const status = (err as { response?: { status?: number } })?.response?.status
       if (status === 409) {
@@ -106,9 +107,29 @@ export function RegisterPage() {
             borderRadius: '14px',
           }}
         >
-          <Typography sx={{ fontWeight: 700, fontSize: '1.1rem', color: '#fafafa', mb: 0.5, letterSpacing: '-0.02em' }}>
-            Crear cuenta
-          </Typography>
+          {registeredEmail ? (
+            <Box sx={{ textAlign: 'center', py: 1 }}>
+              <MarkEmailReadIcon sx={{ fontSize: 52, color: '#6366f1', mb: 2 }} />
+              <Typography sx={{ fontWeight: 700, fontSize: '1.1rem', color: '#fafafa', mb: 1, letterSpacing: '-0.02em' }}>
+                ¡Revisa tu correo!
+              </Typography>
+              <Typography sx={{ fontSize: '0.85rem', color: '#525252', mb: 0.5 }}>
+                Enviamos un email a
+              </Typography>
+              <Typography sx={{ fontSize: '0.875rem', color: '#818cf8', fontWeight: 600, mb: 2.5 }}>
+                {registeredEmail}
+              </Typography>
+              <Typography sx={{ fontSize: '0.8rem', color: '#525252', lineHeight: 1.7 }}>
+                Haz click en el enlace del email para activar tu cuenta.
+                <br />
+                ¿No lo ves? Revisa tu carpeta de spam.
+              </Typography>
+            </Box>
+          ) : (
+            <>
+              <Typography sx={{ fontWeight: 700, fontSize: '1.1rem', color: '#fafafa', mb: 0.5, letterSpacing: '-0.02em' }}>
+                Crear cuenta
+              </Typography>
           <Typography sx={{ fontSize: '0.85rem', color: '#525252', mb: 3 }}>
             Empieza a organizar tus tareas
           </Typography>
@@ -165,14 +186,18 @@ export function RegisterPage() {
               Crear cuenta
             </Button>
           </Box>
+        </>
+          )}
         </Paper>
 
-        <Typography sx={{ textAlign: 'center', mt: 3, fontSize: '0.8125rem', color: '#525252' }}>
-          ¿Ya tienes cuenta?{' '}
-          <Link component={RouterLink} to="/login" sx={{ color: '#818cf8', textDecorationColor: '#818cf8' }}>
-            Inicia sesión
-          </Link>
-        </Typography>
+        {!registeredEmail && (
+          <Typography sx={{ textAlign: 'center', mt: 3, fontSize: '0.8125rem', color: '#525252' }}>
+            ¿Ya tienes cuenta?{' '}
+            <Link component={RouterLink} to="/login" sx={{ color: '#818cf8', textDecorationColor: '#818cf8' }}>
+              Inicia sesión
+            </Link>
+          </Typography>
+        )}
       </Box>
     </Box>
   )
