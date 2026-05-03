@@ -85,3 +85,5 @@ export function HeroSection() {
     </Box>
   )
 }
+
+export default HeroSection

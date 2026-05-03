@@ -112,3 +112,4 @@ export function TasksPage() {
   )
 }
 
+export default TasksPage

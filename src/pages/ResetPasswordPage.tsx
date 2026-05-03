@@ -231,3 +231,5 @@ export function ResetPasswordPage() {
     </Box>
   )
 }
+
+export default ResetPasswordPage

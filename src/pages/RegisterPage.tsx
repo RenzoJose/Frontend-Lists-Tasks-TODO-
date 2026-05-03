@@ -8,7 +8,6 @@ import HomeIcon from '@mui/icons-material/Home'
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import * as authApi from '@/api/auth'
-import type { RegisterDto } from '@/types/auth'
 
 const schema = z
   .object({
@@ -33,11 +32,11 @@ export function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({ resolver: standardSchemaResolver(schema) })
 
-  const onSubmit = async (data: RegisterDto) => {
+  const onSubmit = async (data: FormData) => {
     setServerError(null)
     try {
-      const { confirmPassword: _, ...payload } = data
-      await authApi.register(payload)
+      const { email, password } = data
+      await authApi.register({ email, password })
       setRegisteredEmail(data.email)
     } catch (err: unknown) {
       const status = (err as { response?: { status?: number } })?.response?.status
@@ -202,3 +201,4 @@ export function RegisterPage() {
     </Box>
   )
 }
+export default RegisterPage

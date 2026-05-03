@@ -141,3 +141,5 @@ export function VerifyEmailPage() {
     </Box>
   )
 }
+
+export default VerifyEmailPage

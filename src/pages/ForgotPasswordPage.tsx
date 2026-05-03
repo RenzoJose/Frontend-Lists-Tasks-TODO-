@@ -136,3 +136,5 @@ export function ForgotPasswordPage() {
     </Box>
   )
 }
+
+export default ForgotPasswordPage
