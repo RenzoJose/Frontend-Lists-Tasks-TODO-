@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import type { Priority, Status, Task } from '@/types/task'
 import { useUpdateTask, useDeleteTask } from '@/hooks/useTasks'
 
@@ -38,18 +38,19 @@ export function useTaskActions(task: Task): TaskActions {
   const [editPriority, setEditPriority] = useState<Priority>(task.priority)
   const [editStatus, setEditStatus] = useState<Status>(task.status)
 
-  const handleToggle = () =>
+  const handleToggle = useCallback(() =>
     updateTask({ id: task.id, dto: { completed: !task.completed } })
+  , [task.id, task.completed, updateTask])
 
-  const openEdit = () => {
+  const openEdit = useCallback(() => {
     setEditTitle(task.title)
     setEditDescription(task.description ?? '')
     setEditPriority(task.priority)
     setEditStatus(task.status)
     setEditOpen(true)
-  }
+  }, [task.title, task.description, task.priority, task.status])
 
-  const handleEditSave = () =>
+  const handleEditSave = useCallback(() =>
     updateTask(
       {
         id: task.id,
@@ -62,9 +63,11 @@ export function useTaskActions(task: Task): TaskActions {
       },
       { onSuccess: () => setEditOpen(false) },
     )
+  , [task.id, task.title, editTitle, editDescription, editPriority, editStatus, updateTask])
 
-  const handleDeleteConfirm = () =>
+  const handleDeleteConfirm = useCallback(() =>
     deleteTask(task.id, { onSuccess: () => setConfirmOpen(false) })
+  , [task.id, deleteTask])
 
   return {
     isUpdating,

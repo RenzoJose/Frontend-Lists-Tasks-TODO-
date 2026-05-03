@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Box, IconButton, Tooltip, Typography } from '@mui/material'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
@@ -20,7 +21,7 @@ const statusConfig: Record<Status, { label: string; bg: string; color: string }>
   done:        { label: 'Hecho',       bg: '#152d1d', color: '#4ade80' },
 }
 
-export function TaskItem({ task }: { task: Task }) {
+export const TaskItem = memo(function TaskItem({ task }: { task: Task }) {
   const actions = useTaskActions(task)
   const priority = priorityConfig[task.priority as Priority] ?? priorityConfig.medium
   const status = statusConfig[task.status as Status] ?? statusConfig.pending
@@ -236,5 +237,5 @@ export function TaskItem({ task }: { task: Task }) {
       />
     </>
   )
-}
+})
 

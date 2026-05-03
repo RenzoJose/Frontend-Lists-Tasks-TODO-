@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Box, IconButton, Typography } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import { TaskForm } from '@/components/tasks/TaskForm'
@@ -12,9 +12,16 @@ export function TasksPage() {
   const filters = useTaskFilters()
   const [mobileOpen, setMobileOpen] = useState(false)
 
-  const allTasks     = tasks ?? []
-  const pendingCount   = allTasks.filter((t) => !t.completed).length
-  const completedCount = allTasks.filter((t) => t.completed).length
+  const allTasks = tasks ?? []
+  
+  // Memoizar conteos para evitar recálculos innecesarios
+  const pendingCount = useMemo(() => 
+    allTasks.filter((t) => !t.completed).length
+  , [allTasks])
+  
+  const completedCount = useMemo(() => 
+    allTasks.filter((t) => t.completed).length
+  , [allTasks])
 
   const headerLabels: Record<string, string> = {
     all:       'Todas las tareas',
