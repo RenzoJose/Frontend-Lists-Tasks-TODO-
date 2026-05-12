@@ -5,9 +5,13 @@ import { AuthProvider } from './contexts/AuthContext'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
 
 // Lazy loading para reducir el bundle inicial
+const LandingPage = lazy(() => import('./pages/LandingPage'))
 const TasksPage = lazy(() => import('./pages/TasksPage'))
 const LoginPage = lazy(() => import('./pages/LoginPage'))
 const RegisterPage = lazy(() => import('./pages/RegisterPage'))
+const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage'))
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'))
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'))
 
 // Fallback de carga
 const PageLoader = () => (
@@ -133,10 +137,14 @@ function App() {
         <AuthProvider>
           <Suspense fallback={<PageLoader />}>
             <Routes>
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/verify-email" element={<VerifyEmailPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route element={<ProtectedRoute />}>
-                <Route path="/" element={<TasksPage />} />
+                <Route path="/tasks" element={<TasksPage />} />
               </Route>
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

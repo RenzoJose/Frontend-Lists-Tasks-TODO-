@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback, type React
 import { jwtDecode } from 'jwt-decode'
 import { queryClient } from '@/lib/queryClient'
 import * as authApi from '@/api/auth'
-import type { User, LoginDto, RegisterDto } from '@/types/auth'
+import type { User, LoginDto } from '@/types/auth'
 
 const TOKEN_KEY = 'auth_token'
 
@@ -17,7 +17,6 @@ interface AuthContextValue {
   token: string | null
   isLoading: boolean
   login: (dto: LoginDto) => Promise<void>
-  register: (dto: RegisterDto) => Promise<void>
   logout: () => void
 }
 
@@ -58,12 +57,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     saveSession(newToken, newUser)
   }
 
-  const register = async (dto: RegisterDto) => {
-    const { confirmPassword: _, ...payload } = dto
-    const { token: newToken, user: newUser } = await authApi.register(payload)
-    saveSession(newToken, newUser)
-  }
-
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY)
     setToken(null)
@@ -72,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
