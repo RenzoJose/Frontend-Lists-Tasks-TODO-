@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { Box, Button, Link, Paper, TextField, Typography } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import type { LoginDto } from '@/types/auth'
 
 const schema = z.object({

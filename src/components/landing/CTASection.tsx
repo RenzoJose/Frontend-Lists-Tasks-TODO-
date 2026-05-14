@@ -1,6 +1,6 @@
 import { Box, Typography, Button } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 
 export function CTASection() {
   const { user } = useAuth()

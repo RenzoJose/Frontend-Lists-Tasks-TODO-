@@ -12,7 +12,7 @@ export function TasksPage() {
   const filters = useTaskFilters()
   const [mobileOpen, setMobileOpen] = useState(false)
 
-  const allTasks = tasks ?? []
+  const allTasks = useMemo(() => tasks ?? [], [tasks])
   
   // Memoizar conteos para evitar recálculos innecesarios
   const pendingCount = useMemo(() => 
