@@ -6,7 +6,7 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import type { Priority, Status } from '@/types/task'
 import type { TaskFilters, ViewMode } from '@/hooks/useTaskFilters'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 
 // ─── NavItem ──────────────────────────────────────────────────────────────────
 

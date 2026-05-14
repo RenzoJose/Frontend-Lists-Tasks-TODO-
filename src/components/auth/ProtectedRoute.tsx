@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import { Box, CircularProgress } from '@mui/material'
 
 export function ProtectedRoute() {
@@ -13,5 +13,5 @@ export function ProtectedRoute() {
     )
   }
 
-  return token ? <Outlet /> : <Navigate to="/login" replace />
+  return token ? <Outlet /> : <Navigate to="/" replace />
 }
